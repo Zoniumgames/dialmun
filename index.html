@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bracket2026</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --text-color: #f8fafc;
+            --primary: #10b981;
+            --secondary: #3b82f6;
+            --accent: #eab308;
+            --danger: #ef4444;
+            --line-color: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 40px 20px;
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        p.subtitle {
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        .bracket-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0px;
+            min-width: 1700px;
+            margin: 0 auto;
+        }
+
+        .side-container {
+            display: flex;
+            gap: 0px;
+        }
+
+        .round {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 200px;
+            position: relative;
+        }
+
+        .match-pair {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            position: relative;
+            flex-grow: 1;
+        }
+
+        /* Alturas estables por ronda para bloquear las líneas */
+        .round_16 .match-pair { height: 150px; padding: 10px 0; }
+        .round_8 .match-pair { height: 300px; padding: 20px 0; }
+        .round_4 .match-pair { height: 600px; padding: 40px 0; }
+        .round_2 .match-pair { height: 1200px; padding: 80px 0; }
+
+        .matchup {
+            background-color: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            margin: auto 0;
+        }
+
+        .matchup:hover {
+            border-color: var(--secondary);
+        }
+
+        .team {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 32px;
+        }
+
+        .team-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 130px;
+        }
+
+        .flag {
+            width: 24px;
+            height: 16px;
+            object-fit: cover;
+            border-radius: 2px;
+            background-color: #334155;
+        }
+
+        .score-input {
+            width: 35px;
+            height: 28px;
+            background-color: #0b0f19;
+            border: 1px solid var(--card-border);
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+            font-weight: bold;
+            -appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        .score-input::-webkit-outer-spin-button,
+        .score-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .match-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 4px 0;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-win { background-color: var(--primary); color: #0b0f19; }
+        .btn-reset { background-color: #475569; color: white; max-width: 35px; }
+
+        /* LADO IZQUIERDO: Conectores matemáticos */
+        .left-side .round:not(.round_2) .matchup::after {
+            content: ""; position: absolute; right: -20px; top: 57%; width: 20px; border-top: 2px solid var(--line-color); z-index: 1;
+        }
+        .left-side .round:not(.round_2) .match-pair::after {
+            content: ""; position: absolute; right: -20px; top: 28%; height: 47%; border-right: 2px solid var(--line-color); z-index: 1;
+        }
+        .left-side .round:not(.round_2) .match-pair::before {
+            content: ""; position: absolute; right: -40px; top: 50%; width: 20px; border-top: 2px solid var(--line-color); z-index: 1;
+        }
+        .left-side .round:not(.round_16) .matchup::before {
+            content: ""; position: absolute; left: -20px; top: 50%; width: 20px; border-top: 2px solid var(--line-color); z-index: 1;
+        }
+
+        /* LADO DERECHO: Conectores matemáticos (Espejo) */
+        .right-side .round:not(.round_2) .matchup::after {
+            content: ""; position: absolute; left: -20px; top: 57%; width: 20px; border-top: 2px solid var(--line-color); z-index: 1;
+        }
+        .right-side .round:not(.round_2) .match-pair::after {
+            content: ""; position: absolute; left: -20px; top: 28%; height: 47%; border-left: 2px solid var(--line-color); z-index: 1;
+        }
+        .right-side .round:not(.round_2) .match-pair::before {
+            content: ""; position: absolute; left: -40px; top: 50%; width: 20px; border-top: 2px solid var(--line-color); z-index: 1;
+        }
+        .right-side .round:not(.round_16) .matchup::before {
+            content: ""; position: absolute; right: -20px; top: 50%; width: 20px; border-top: 2px solid var(--line-color); z-index: 1;
+        }
+
+        .round_16 { margin: 0 40px; }
+        .round_8 { margin: 0 40px; }
+        .round_4 { margin: 0 40px; }
+        .round_2 { margin: 0 20px; }
+
+        .center-side {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 40px;
+            width: 240px;
+            height: 1200px;
+        }
+
+        #champion-container {
+            border: 3px solid var(--accent);
+            padding: 20px;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #1e293b, #070a12);
+            text-align: center;
+            box-shadow: 0 0 25px rgba(234, 179, 8, 0.35);
+        }
+
+        .champion-title { color: var(--accent); font-weight: 800; margin-bottom: 10px; letter-spacing: 1px;}
+        .champion-team { font-size: 1.5rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .locked { opacity: 0.85; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>MUNDIAL 2026</h1>
+        <p class="subtitle">Elminatoria</p>
+    </header>
+
+    <div class="bracket-container">
+        
+        <div class="side-container left-side">
+            <div class="round round_16" id="round1-left"></div>
+            <div class="round round_8" id="round2-left"></div>
+            <div class="round round_4" id="round3-left"></div>
+            <div class="round round_2" id="round4-left"></div>
+        </div>
+
+        <div class="center-side">
+            <div style="text-align: center; font-weight: bold; color: var(--accent);">GRAN FINAL</div>
+            <div id="final-match-container"></div>
+            <div id="champion-container">
+                <div class="champion-title">CAMPEÓN</div>
+                <div id="champion-display" class="champion-team">?</div>
+            </div>
+        </div>
+
+        <div class="side-container right-side" style="flex-direction: row-reverse;">
+            <div class="round round_16" id="round1-right"></div>
+            <div class="round round_8" id="round2-right"></div>
+            <div class="round round_4" id="round3-right"></div>
+            <div class="round round_2" id="round4-right"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const flags = {
+            "Alemania": "de", "Paraguay": "py", "Francia": "fr", "Suecia": "se",
+            "Sudáfrica": "za", "Canadá": "ca", "Países Bajos": "nl", "Marruecos": "ma",
+            "Portugal": "pt", "Ghana": "gh", "España": "es", "Austria": "at",
+            "Estados Unidos": "us", "Bosnia Herzegovina": "ba", "Egipto": "eg", "Corea del Sur": "kr",
+            "Brasil": "br", "Japón": "jp", "Costa de Marfil": "ci", "Noruega": "no",
+            "México": "mx", "Escocia": "gb-sct", "Inglaterra": "gb-eng", "Ecuador": "ec",
+            "Argentina": "ar", "Uruguay": "uy", "Australia": "au", "Irán": "ir",
+            "Suiza": "ch", "Argelia": "dz", "Colombia": "co", "Croacia": "hr", "?": "unknown"
+        };
+
+        const initialMatchesLeft = [
+            { id: "L_16_1", team1: "Alemania", team2: "Paraguay" }, { id: "L_16_2", team1: "Francia", team2: "Suecia" },
+            { id: "L_16_3", team1: "Sudáfrica", team2: "Canadá" }, { id: "L_16_4", team1: "Países Bajos", team2: "Marruecos" },
+            { id: "L_16_5", team1: "Portugal", team2: "Ghana" }, { id: "L_16_6", team1: "España", team2: "Austria" },
+            { id: "L_16_7", team1: "Estados Unidos", team2: "Bosnia Herzegovina" }, { id: "L_16_8", team1: "Egipto", team2: "Corea del Sur" }
+        ];
+
+        const initialMatchesRight = [
+            { id: "R_16_1", team1: "Brasil", team2: "Japón" }, { id: "R_16_2", team1: "Costa de Marfil", team2: "Noruega" },
+            { id: "R_16_3", team1: "México", team2: "Escocia" }, { id: "R_16_4", team1: "Inglaterra", team2: "Ecuador" },
+            { id: "R_16_5", team1: "Argentina", team2: "Uruguay" }, { id: "R_16_6", team1: "Australia", team2: "Irán" },
+            { id: "R_16_7", team1: "Suiza", team2: "Argelia" }, { id: "R_16_8", team1: "Colombia", team2: "Croacia" }
+        ];
+
+        const progressionMap = {
+            "L_16_1": { next: "L_8_1", slot: 1 }, "L_16_2": { next: "L_8_1", slot: 2 },
+            "L_16_3": { next: "L_8_2", slot: 1 }, "L_16_4": { next: "L_8_2", slot: 2 },
+            "L_16_5": { next: "L_8_3", slot: 1 }, "L_16_6": { next: "L_8_3", slot: 2 },
+            "L_16_7": { next: "L_8_4", slot: 1 }, "L_16_8": { next: "L_8_4", slot: 2 },
+            "L_8_1": { next: "L_4_1", slot: 1 }, "L_8_2": { next: "L_4_1", slot: 2 },
+            "L_8_3": { next: "L_4_2", slot: 1 }, "L_8_4": { next: "L_4_2", slot: 2 },
+            "L_4_1": { next: "L_2_1", slot: 1 }, "L_4_2": { next: "L_2_1", slot: 2 },
+            "L_2_1": { next: "FINAL", slot: 1 },
+
+            "R_16_1": { next: "R_8_1", slot: 1 }, "R_16_2": { next: "R_8_1", slot: 2 },
+            "R_16_3": { next: "R_8_2", slot: 1 }, "R_16_4": { next: "R_8_2", slot: 2 },
+            "R_16_5": { next: "R_8_3", slot: 1 }, "R_16_6": { next: "R_8_3", slot: 2 },
+            "R_16_7": { next: "R_8_4", slot: 1 }, "R_16_8": { next: "R_8_4", slot: 2 },
+            "R_8_1": { next: "R_4_1", slot: 1 }, "R_8_2": { next: "R_4_1", slot: 2 },
+            "R_8_3": { next: "R_4_2", slot: 1 }, "R_8_4": { next: "R_4_2", slot: 2 },
+            "R_4_1": { next: "R_2_1", slot: 1 }, "R_4_2": { next: "R_2_1", slot: 2 },
+            "R_2_1": { next: "FINAL", slot: 2 },
+            "FINAL": { next: "CHAMPION", slot: 0 }
+        };
+
+        function getFlagUrl(countryName) {
+            const code = flags[countryName];
+            if (!code || code === "unknown") return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='16'><rect width='100%' height='100%' fill='%23334155'/></svg>";
+            if(code.startsWith("gb-")) {
+                return `https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.4.3/flags/4x3/${code.replace("-", "")}.svg`;
+            }
+            return `https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.4.3/flags/4x3/${code}.svg`;
+        }
+
+        function createMatchHTML(id, team1 = "?", team2 = "?") {
+    // Definimos la flecha por defecto según el lado (Izquierda o Derecha)
+    let arrowIcon = id.startsWith("R") ? "🡸" : "🡺";
+    
+    // SI ES LA FINAL: Cambiamos la flecha para que apunte hacia abajo (al campeón)
+    if (id === "FINAL") {
+        arrowIcon = "🡻";
+    }
+
+    const isDisabled = (team1 === '?' || team2 === '?');
+    return `
+        <div class="matchup" id="match-${id}">
+            <div class="team">
+                <div class="team-info">
+                    <img src="${getFlagUrl(team1)}" class="flag" id="flag-${id}-t1" onerror="this.src='https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.4.3/flags/4x3/un.svg'">
+                    <span id="name-${id}-t1">${team1}</span>
+                </div>
+                <input type="number" min="0" class="score-input" id="score-${id}-t1" ${isDisabled ? 'disabled' : ''}>
+            </div>
+            <div class="team">
+                <div class="team-info">
+                    <img src="${getFlagUrl(team2)}" class="flag" id="flag-${id}-t2" onerror="this.src='https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.4.3/flags/4x3/un.svg'">
+                    <span id="name-${id}-t2">${team2}</span>
+                </div>
+                <input type="number" min="0" class="score-input" id="score-${id}-t2" ${isDisabled ? 'disabled' : ''}>
+            </div>
+            <div class="match-actions">
+                <button class="btn btn-win" onclick="resolveMatch('${id}')" ${isDisabled ? 'disabled' : ''}>${arrowIcon}</button>
+                <button class="btn btn-reset" onclick="resetMatch('${id}')">✕</button>
+            </div>
+        </div>
+    `;
+}
+
+        // CORRECCIÓN: Renderiza la Ronda 1 con los países reales de la lista
+        function buildInitialRound(containerId, dataList) {
+            const container = document.getElementById(containerId);
+            for (let i = 0; i < dataList.length; i += 2) {
+                container.innerHTML += `
+                    <div class="match-pair">
+                        ${createMatchHTML(dataList[i].id, dataList[i].team1, dataList[i].team2)}
+                        ${createMatchHTML(dataList[i+1].id, dataList[i+1].team1, dataList[i+1].team2)}
+                    </div>`;
+            }
+        }
+
+        // Renderiza las rondas siguientes vacías preparadas para recibir ganadores
+        function buildEmptyRound(containerId, count, prefix) {
+            const container = document.getElementById(containerId);
+            for (let i = 1; i <= count; i += 2) {
+                container.innerHTML += `
+                    <div class="match-pair">
+                        ${createMatchHTML(`${prefix}_${i}`)}
+                        ${createMatchHTML(`${prefix}_${i+1}`)}
+                    </div>`;
+            }
+        }
+
+        function initBracket() {
+            // Cargar los países reales en los 16avos de final
+            buildInitialRound("round1-left", initialMatchesLeft);
+            buildInitialRound("round1-right", initialMatchesRight);
+
+            // Crear los contenedores de Octavos y Cuartos vacíos (?) esperando resultados
+            buildEmptyRound("round2-left", 4, "L_8");
+            buildEmptyRound("round2-right", 4, "R_8");
+            buildEmptyRound("round3-left", 2, "L_4");
+            buildEmptyRound("round3-right", 2, "R_4");
+
+            // Semifinales y Final
+            document.getElementById("round4-left").innerHTML = `<div class="match-pair">${createMatchHTML("L_2_1")}</div>`;
+            document.getElementById("round4-right").innerHTML = `<div class="match-pair">${createMatchHTML("R_2_1")}</div>`;
+            document.getElementById("final-match-container").innerHTML = createMatchHTML("FINAL");
+        }
+
+        function resolveMatch(matchId) {
+            const score1 = parseInt(document.getElementById(`score-${matchId}-t1`).value);
+            const score2 = parseInt(document.getElementById(`score-${matchId}-t2`).value);
+            const team1 = document.getElementById(`name-${matchId}-t1`).innerText;
+            const team2 = document.getElementById(`name-${matchId}-t2`).innerText;
+
+            if (isNaN(score1) || isNaN(score2)) return alert("Por favor, ingresa los goles.");
+            if (score1 === score2) return alert("Debe haber un ganador (Suma el gol decisivo de penales).");
+
+            const winner = score1 > score2 ? team1 : team2;
+            const config = progressionMap[matchId];
+
+            if (config.next === "CHAMPION") {
+                document.getElementById("champion-display").innerHTML = `<img src="${getFlagUrl(winner)}" class="flag" style="width:30px;"> ${winner}`;
+            } else {
+                const nextId = config.next;
+                const slot = config.slot;
+                document.getElementById(`name-${nextId}-t${slot}`).innerText = winner;
+                document.getElementById(`flag-${nextId}-t${slot}`).src = getFlagUrl(winner);
+
+                const partnerSlot = slot === 1 ? 2 : 1;
+                const partner = document.getElementById(`name-${nextId}-t${partnerSlot}`).innerText;
+                if (partner !== "?") {
+                    document.getElementById(`score-${nextId}-t1`).disabled = false;
+                    document.getElementById(`score-${nextId}-t2`).disabled = false;
+                    document.querySelector(`#match-${nextId} .btn-win`).disabled = false;
+                }
+            }
+            document.getElementById(`match-${matchId}`).classList.add("locked");
+        }
+
+        function resetMatch(matchId) {
+            document.getElementById(`score-${matchId}-t1`).value = "";
+            document.getElementById(`score-${matchId}-t2`).value = "";
+            document.getElementById(`match-${matchId}`).classList.remove("locked");
+            const config = progressionMap[matchId];
+            if (!config) return;
+
+            if (config.next === "CHAMPION") {
+                document.getElementById("champion-display").innerText = "?";
+            } else {
+                const nextId = config.next;
+                document.getElementById(`name-${nextId}-t${config.slot}`).innerText = "?";
+                document.getElementById(`flag-${nextId}-t${config.slot}`).src = getFlagUrl("?");
+                document.getElementById(`score-${nextId}-t1`).disabled = true;
+                document.getElementById(`score-${nextId}-t2`).disabled = true;
+                document.querySelector(`#match-${nextId} .btn-win`).disabled = true;
+                resetMatch(nextId);
+            }
+        }
+
+        window.onload = initBracket;
+    </script>
+</body>
+</html>
