@@ -404,8 +404,7 @@
         <h1>Torneo Internacional de Soccer 2026</h1>
         <p class="subtitle">Arrastra para explorar • Rueda del mouse / Botones para Zoom • Pasa el cursor sobre un equipo</p>
     </header>
-
-    <div class="controls-hint">Cualquier parecido con torneos reales es coincidencia.</div>
+    <div class="controls-hint">Cualquier parecido con torneos realizados por cierta federación de 4 letras es mera coincidencia.</div>
 
     <!-- Panel de control flotante -->
     <div class="control-panel">
@@ -808,11 +807,11 @@
             });
 
             state.names['champion-display'] = document.getElementById('champion-display').innerHTML;
-            localStorage.setItem('mundial2026_bracket', JSON.stringify(state));
+            localStorage.setItem('tids2026_bracket', JSON.stringify(state));
         }
 
         function loadBracketState() {
-            const saved = localStorage.getItem('mundial2026_bracket');
+            const saved = localStorage.getItem('tids2026_bracket');
             if (!saved) return;
 
             const state = JSON.parse(saved);
