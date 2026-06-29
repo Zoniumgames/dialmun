@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TIDS - Torneo Internacional de Soccer 2026</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     <style>
         :root {
             --bg-color: #080c14;
@@ -402,15 +407,21 @@
 
     <header>
         <h1>Torneo Internacional de Soccer 2026</h1>
-        <p class="subtitle">Arrastra para explorar • Rueda del mouse / Botones para Zoom • Pasa el cursor sobre un equipo</p>
+        <p class="subtitle">Arrastra para explorar • Scroll para Zoom • Doble click para reiniciar vista</p>
     </header>
-    <div class="controls-hint">Cualquier parecido con torneos realizados por cierta federación de 4 letras es mera coincidencia.</div>
+    <div class="controls-hint">Cualquier parecido con torneos realizados por cierta Entidad de 4 letras es mera coincidencia.</div>
 
     <!-- Panel de control flotante -->
     <div class="control-panel">
-        <button class="control-btn" onclick="zoomIn()" title="Acercar">＋</button>
-        <button class="control-btn" onclick="zoomOut()" title="Alejar">－</button>
-        <button class="control-btn" onclick="resetView()" title="Centrar Vista">🎯</button>
+        <button class="control-btn" onclick="zoomIn()" title="Acercar"><span class="material-symbols-outlined">
+add
+</span></button>
+        <button class="control-btn" onclick="zoomOut()" title="Alejar"><span class="material-symbols-outlined">
+remove
+</span></button>
+        <button class="control-btn" onclick="resetView()" title="Centrar Vista"><span class="material-symbols-outlined">
+refresh
+</span></button>
     </div>
 
     <div class="viewport" id="viewport">
