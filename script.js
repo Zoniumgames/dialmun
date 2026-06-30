@@ -1,3 +1,6 @@
+                const STORAGE_VERSION = 2;
+                const STORAGE_KEY = `tids2026_bracket_v${STORAGE_VERSION}`;        
+
 
         const flags = {
             "Alemania": "de", "Paraguay": "py", "Francia": "fr", "Suecia": "se",
@@ -337,8 +340,7 @@
                 winnerClasses: {}
             };
 
-                const STORAGE_VERSION = 2;
-                const STORAGE_KEY = `tids2026_bracket_v${STORAGE_VERSION}`;
+                
 
             document.querySelectorAll('.matchup').forEach(match => {
                 const id = match.id.replace('match-', '');
