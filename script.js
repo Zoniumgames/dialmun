@@ -337,6 +337,9 @@
                 winnerClasses: {}
             };
 
+                const STORAGE_VERSION = 2;
+                const STORAGE_KEY = `tids2026_bracket_v${STORAGE_VERSION}`;
+
             document.querySelectorAll('.matchup').forEach(match => {
                 const id = match.id.replace('match-', '');
                 
@@ -368,11 +371,11 @@
             });
 
             state.names['champion-display'] = document.getElementById('champion-display').innerHTML;
-            localStorage.setItem('tids2026_bracket', JSON.stringify(state));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         }
 
         function loadBracketState() {
-            const saved = localStorage.getItem('tids2026_bracket');
+            const saved = localStorage.getItem(STORAGE_KEY);
             if (!saved) return;
 
             const state = JSON.parse(saved);
